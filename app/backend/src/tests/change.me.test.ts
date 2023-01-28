@@ -7,6 +7,8 @@ import { app } from '../app';
 import Example from '../database/models/ExampleModel';
 
 import { Response } from 'superagent';
+import Users from '../database/models/UsersModel';
+import  userMocked  from './mocks';
 
 chai.use(chaiHttp);
 
@@ -17,19 +19,53 @@ describe('Seu teste', () => {
    * Exemplo do uso de stubs com tipos
    */
 
-  // let chaiHttpResponse: Response;
+  let chaiHttpResponse: Response;
 
-  // before(async () => {
-  //   sinon
-  //     .stub(Example, "findOne")
-  //     .resolves({
-  //       ...<Seu mock>
-  //     } as Example);
-  // });
+  before(async () => {
+    sinon.stub(Users, 'findOne').resolves({
+      ...userMocked,
+    } as Users);
+  });
 
-  // after(()=>{
-  //   (Example.findOne as sinon.SinonStub).restore();
-  // })
+  after(() => {
+    (Users.findOne as sinon.SinonStub).restore();
+  });
+
+  it('testando a rota de login', async () => {
+    chaiHttpResponse = await chai
+      .request(app)
+      .post('/login')
+      .send({ email: 'felipe@luis.com', password: 'alunotrybe123' });
+
+    expect(chaiHttpResponse.status).to.be.equal(200);
+  });
+
+  it('testando o processo de validação com senha incorreta', async () => {
+    chaiHttpResponse = await chai
+      .request(app)
+      .post('/login')
+      .send({ email: 'felipe@luis.com', password: 24 });
+    expect(chaiHttpResponse.status).to.be.equal(401);
+    expect(chaiHttpResponse.body).to.be.equal({ message: 'Incorrect email or password' });
+  });
+
+  it('testando processo de validação sem a senha', async () => {
+    chaiHttpResponse = await chai
+      .request(app)
+      .post('/login')
+      .send({ email: 'felipe@luis.com' });
+    expect(chaiHttpResponse.status).to.be.equal(400);
+    expect(chaiHttpResponse.body).to.be.equal({ message: 'All fields must be filled' });
+  });
+
+  it('testando processo de validação sem o email', async () => {
+    chaiHttpResponse = await chai
+      .request(app)
+      .post('/login')
+      .send({ password: 'alunotrybe123' });
+    expect(chaiHttpResponse.status).to.be.equal(400);
+    expect(chaiHttpResponse.body).to.be.equal({ message: 'All fields must be filled' });
+  });
 
   // it('...', async () => {
   //   chaiHttpResponse = await chai
