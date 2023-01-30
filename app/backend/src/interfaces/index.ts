@@ -16,8 +16,23 @@ interface LoginUser {
   email: string;
 }
 
+interface MatchesCriadas {
+  homeTeamId: number;
+  awayTeamId: number;
+  homeTeamGoals: number;
+  awayTeamGoals: number;
+  inProgress?: number;
+}
+
+interface Teams {
+  homeTeamGoals: string;
+  awayTeamGoals: string;
+}
+
 export {
   LoginData,
   Exemplo,
   LoginUser,
+  MatchesCriadas,
+  Teams,
 };

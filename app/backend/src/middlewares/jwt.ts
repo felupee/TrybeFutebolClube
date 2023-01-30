@@ -20,9 +20,14 @@ const validateToken = async (req: Request, res: Response, next: NextFunction) =>
       return res.status(401).json({ message: 'Token not found' });
     }
 
-    const decode = jwt.verify(token, senha) as jwt.JwtPayload;
+    // const decode = jwt.verify(token, senha) as jwt.JwtPayload;
 
-    req.body.user = decode;
+    try {
+      const decoded = jwt.verify(token, senha) as jwt.JwtPayload;
+      req.body.user = decoded;
+    } catch (err) {
+      return res.status(401).json({ message: 'Token must be a valid token' });
+    }
 
     next();
   } catch (e) {
