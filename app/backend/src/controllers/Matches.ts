@@ -31,7 +31,7 @@ const createMatch = async (req: Request, res: Response) => {
 
   if (newMatch === 'Equal Teams') {
     return res
-      .status(401)
+      .status(422)
       .json({ message: 'It is not possible to create a match with two equal teams' });
   }
 

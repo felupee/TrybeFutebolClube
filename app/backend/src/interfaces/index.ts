@@ -17,14 +17,13 @@ interface LoginUser {
 }
 
 interface MatchesCriadas {
-  homeTeamId: number;
-  awayTeamId: number;
-  homeTeamGoals: number;
-  awayTeamGoals: number;
-  inProgress?: number;
+  homeTeamId: number
+  awayTeamId: number
+  homeTeamGoals: number
+  awayTeamGoals: number
 }
 
-interface Teams {
+interface Teamss {
   homeTeamGoals: string;
   awayTeamGoals: string;
 }
@@ -34,5 +33,5 @@ export {
   Exemplo,
   LoginUser,
   MatchesCriadas,
-  Teams,
+  Teamss,
 };

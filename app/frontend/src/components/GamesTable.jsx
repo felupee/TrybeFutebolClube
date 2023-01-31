@@ -29,7 +29,7 @@ const GamesTable = ({ currentFilter, isAdm }) => {
       break;
     }
   }, [currentFilter]);
-
+  console.log(games, 'teste');
   useEffect(() => {
     const endpoint = '/matches';
 

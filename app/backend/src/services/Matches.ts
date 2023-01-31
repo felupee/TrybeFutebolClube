@@ -1,8 +1,14 @@
-import { MatchesCriadas, Teams } from '../interfaces';
+import { MatchesCriadas, Teamss } from '../interfaces';
 import Matches from '../database/models/Matches';
+import Teams from '../database/models/TeamsModel';
 
 const getAll = async () => {
-  const matches = await Matches.findAll();
+  const matches = await Matches.findAll({
+    include: [
+      { model: Teams, as: 'homeTeam', attributes: ['teamName'] },
+      { model: Teams, as: 'awayTeam', attributes: ['teamName'] },
+    ],
+  });
   // console.log(matches);
   return matches;
 };
@@ -10,27 +16,31 @@ const getAll = async () => {
 const getMatchByProgress = async (progress: string) => {
   const inProgress = await Matches.findAll({
     where: { inProgress: progress === 'false' ? '0' : '1' },
+    include: [
+      { model: Teams, as: 'homeTeam', attributes: ['teamName'] },
+      { model: Teams, as: 'awayTeam', attributes: ['teamName'] },
+    ],
   });
 
   return inProgress;
 };
 
-const compareAndCreateMatch = async (match: MatchesCriadas) => {
-  const { homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals } = match;
-
+const compareAndCreateMatch = async ({ homeTeamId, awayTeamId,
+  homeTeamGoals, awayTeamGoals }: MatchesCriadas) => {
   if (homeTeamId && awayTeamId && homeTeamId === awayTeamId) {
     return 'Equal Teams';
   }
 
-  const partida = {
-    homeTeamId,
-    homeTeamGoals,
-    awayTeamId,
-    awayTeamGoals,
-    inProgress: 1,
-  };
+  // const partida = {
+  //   homeTeamId,
+  //   homeTeamGoals,
+  //   awayTeamId,
+  //   awayTeamGoals,
+  //   inProgress: 1,
+  // };
 
-  const newMatch = await Matches.create(partida);
+  const newMatch = await Matches.create({
+    homeTeamId, awayTeamId, awayTeamGoals, homeTeamGoals, inProgress: true });
 
   return newMatch;
 };
@@ -43,7 +53,7 @@ const editProgress = async (id: string) => {
   return editedMatch;
 };
 
-const editPlacar = async (id: string, teams: Teams) => {
+const editPlacar = async (id: string, teams: Teamss) => {
   const { homeTeamGoals, awayTeamGoals } = teams;
   const [updatedMatch] = await Matches.update(
     { homeTeamGoals: Number(homeTeamGoals), awayTeamGoals: Number(awayTeamGoals) },
