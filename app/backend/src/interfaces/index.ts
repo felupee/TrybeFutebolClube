@@ -28,10 +28,22 @@ interface Teamss {
   awayTeamGoals: string;
 }
 
+interface IHomeMatch {
+  homeTeamId: number;
+  awayTeam: number;
+  homeTeamGoals: number;
+  awayTeamGoals: number;
+  inProgress?: boolean;
+  homeTeam: {
+    teamName: string;
+  };
+}
+
 export {
   LoginData,
   Exemplo,
   LoginUser,
   MatchesCriadas,
   Teamss,
+  IHomeMatch,
 };
